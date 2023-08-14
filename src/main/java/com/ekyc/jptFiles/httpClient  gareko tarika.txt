@@ -1,0 +1,161 @@
+//
+//    HttpRequest httpRequest = HttpRequest
+//            .newBuilder()
+//            .uri(new URI("https://dev-ap-dtrust.double-std.com/service/api/auth"))
+//            .header("Content-Type", "application/x-www-form-urlencoded")
+//            .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
+////                    .header("Accept","application/json")
+//
+//            .build();
+//    HttpResponse response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+
+//    @Override
+//    public GeneralApiResponse performAuth(EkycRequestDto authRequest) throws URISyntaxException, IOException {
+//        String apiUrl = "https://dev-ap-dtrust.double-std.com/service/api/auth";
+//        String username = "dtrustuser";
+//        String password = "dtrust0703";
+//
+//        // Prepare the parameters
+//        List<NameValuePair> params = new ArrayList<>();
+//        params.add(new BasicNameValuePair("client_code", "forexjapan"));
+//        params.add(new BasicNameValuePair("route_key", "ce242cce8b6579428b361dd22c994cahrishgyuf"));
+//        params.add(new BasicNameValuePair("api_num", "3"));
+//        params.add(new BasicNameValuePair("image_num", "3"));
+//
+//        // Create the HttpClient
+//        try {
+//            CloseableHttpClient httpClient = HttpClients.createDefault();
+//
+//            // Build the URI with parameters
+//            URIBuilder uriBuilder = new URIBuilder(apiUrl);
+//            uriBuilder.addParameters(params);
+//
+//            // Create the HTTP POST request
+//            HttpPost httpPost = new HttpPost(uriBuilder.build());
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+//            httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
+//
+//            // Execute the request and get the response
+//            HttpResponse response = httpClient.execute(httpPost);
+//
+//            // Handle the response
+//            HttpEntity entity = response.getEntity();
+//            String responseBody = entity != null ? EntityUtils.toString(entity) : "";
+//
+//            // Close the HttpClient
+//            httpClient.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+//
+//    private CloseableHttpClient createHttpClient() {
+//        try {
+//            SSLContext sslContext = SSLContexts.custom()
+//                    .loadTrustMaterial((TrustStrategy) (chain, authType) -> true)
+//                    .build();
+//
+//            RequestConfig requestConfig = RequestConfig.custom()
+//                    .setConnectTimeout(5000)
+//                    .setSocketTimeout(5000)
+//                    .build();
+//
+//            return HttpClients.custom()
+//                    .setDefaultRequestConfig(requestConfig)
+//                    .setSSLContext(sslContext)
+//                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+//                    .build();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return HttpClients.createDefault();
+//    }
+
+//    @Override
+//    public GeneralApiResponse performAuth(EkycRequestDto authRequest) {
+//        GeneralApiResponse generalApiResponse = new GeneralApiResponse();
+//        try  {
+//            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+//            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+//            HttpClientBuilder httpClientBuilder =  HttpClients.custom();
+//            httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+//            CloseableHttpClient httpClient = httpClientBuilder.build();
+//            HttpPost httpPost = new HttpPost("https://dev-ap-dtrust.double-std.com/service/api/auth");
+//
+//            // Prepare the form data
+//            List<NameValuePair> formData = new ArrayList<>();
+//            formData.add(new BasicNameValuePair("api_num", String.valueOf(authRequest.getApi_num())));
+//            formData.add(new BasicNameValuePair("image_num", String.valueOf(authRequest.getImage_num())));
+//            httpPost.setEntity(new UrlEncodedFormEntity(formData));
+////            httpPost.set
+//            HttpResponse response = httpClient.execute(httpPost);
+//            int statusCode = response.getStatusLine().getStatusCode();
+//            if (statusCode == 200) {
+//                HttpEntity entity = response.getEntity();
+//                String responseBody = EntityUtils.toString(entity);
+//                System.out.println("API Response: " + responseBody);
+//            } else {
+//                System.err.println("API Request failed with status code: " + statusCode);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return generalApiResponse;
+//    }
+
+
+//        JSONObject jsonObject = new JSONObject();
+//        Map<String, String> formData = new HashMap<>();
+//        formData.put("client_Code", authRequest.getClient_code());
+//        formData.put("route_Key", authRequest.getRoute_key());
+//        formData.put("api_Num", String.valueOf(authRequest.getApi_num()));
+//        formData.put("image_Num", String.valueOf(authRequest.getImage_num()));
+//        String requestBody = formData.entrySet().stream()
+//                .map(entry -> entry.getKey() + "=" + entry.getValue())
+//                .collect(Collectors.joining("&"));
+
+
+//    @Override
+//    public GeneralApiResponse performAuth(EkycRequestDto authRequest) {
+//        GeneralApiResponse generalApiResponse = new GeneralApiResponse();
+//        OkHttpClient client = new OkHttpClient();
+//
+//        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+//
+//        RequestBody body = new FormBody.Builder()
+//                .add("client_code", authRequest.getClient_code())
+//                .add("route_key", authRequest.getRoute_key())
+//                .add("api_num", String.valueOf(authRequest.getApi_num()))
+//                .add("image_num", String.valueOf(authRequest.getImage_num()))
+//                .build();
+//
+//        Request request = new Request.Builder()
+//                .url("https://dev-ap-dtrust.double-std.com/service/api/auth")
+//                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+//                .addHeader("Accept", "application/json")
+//                .addHeader("Authorization", "Basic ZHRydXN0dXNlcjpkdHJ1c3QwNzAz")
+//                .post(body)
+//                .build();
+//
+//        try (Response response = client.newCall(request).execute()) {
+//            if (response.isSuccessful()) {
+//                String responseBody = response.body().string();
+//                // Process the response body here and populate generalApiResponse accordingly
+//            } else {
+//                // Handle non-successful response here
+//                // For example, log the response code and message
+//                System.out.println("Response Code: " + response.code());
+//                System.out.println("Response Message: " + response.message());
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return generalApiResponse;
+//    }

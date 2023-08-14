@@ -1,4 +1,4 @@
-package com.ekyc.model;
+package com.ekyc.apiResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Status {
-    private String code;
-    private String detail;
+public class VideoResponse {
+    private byte[] video_data;
 }

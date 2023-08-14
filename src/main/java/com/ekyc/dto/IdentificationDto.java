@@ -1,5 +1,8 @@
-package com.ekyc.model;
+package com.ekyc.dto;
 
+import com.ekyc.dto.EkycRequestDto;
+import com.ekyc.model.InputDetails;
+import com.ekyc.model.InputImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdentificationDto {
-    private AuthRequest authRequest;
+    private EkycRequestDto authRequest;
     private String api_token;
     private String id;
     private List<InputImage> inputImageList;

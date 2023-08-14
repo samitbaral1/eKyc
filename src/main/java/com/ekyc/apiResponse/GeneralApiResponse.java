@@ -1,12 +1,11 @@
-package com.ekyc.model;
+package com.ekyc.apiResponse;
 
+import com.ekyc.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.annotation.processing.Generated;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

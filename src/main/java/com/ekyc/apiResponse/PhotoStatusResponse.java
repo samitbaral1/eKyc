@@ -1,5 +1,6 @@
-package com.ekyc.model;
+package com.ekyc.apiResponse;
 
+import com.ekyc.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequest {
-    private String client_code;
-    private String route_key;
-    private int api_num;
-    private int image_num;
+public class PhotoStatusResponse {
+    private Status status;
+    private int photo_status;
 }

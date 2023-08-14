@@ -1,13 +1,28 @@
 package com.ekyc.rest.service;
 
-import com.ekyc.model.AuthRequest;
-import com.ekyc.model.GeneralApiResponse;
-import com.ekyc.model.IdentificationDto;
+import com.ekyc.apiResponse.ImageResponse;
+import com.ekyc.apiResponse.PhotoStatusResponse;
+import com.ekyc.apiResponse.VideoResponse;
+import com.ekyc.enums.IdVerificationType;
+import com.ekyc.enums.ImageCodes;
+import com.ekyc.apiResponse.AuthResponseDto;
+import com.ekyc.dto.EkycRequestDto;
+import com.ekyc.dto.IdentificationDto;
+import com.ekyc.rest.entity.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
 
 public interface KycService {
-    GeneralApiResponse performAuth(AuthRequest authRequest);
+    UserDetails saveUserInformation(UserDetails inputData);
+    String processVerificationLink(IdVerificationType cardType, EkycRequestDto ekycRequestDto) throws URISyntaxException;
+    UriComponentsBuilder generateVerificationLink(EkycRequestDto ekycRequestDto, List<ImageCodes> imageCodes) throws URISyntaxException;
+    AuthResponseDto performAuth(EkycRequestDto authRequest) throws URISyntaxException, IOException;
+    PhotoStatusResponse getPhotoStatus(EkycRequestDto ekycRequestDto);
+    ImageResponse getImageData(EkycRequestDto ekycRequestDto);
+    VideoResponse getVideoData(EkycRequestDto ekycRequestDto);
     String performIdentification(IdentificationDto identificationDto) throws JsonProcessingException;
 }
