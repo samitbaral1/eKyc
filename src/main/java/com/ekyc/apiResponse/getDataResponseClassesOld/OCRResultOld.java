@@ -1,4 +1,4 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OCRResult {
+public class OCRResultOld {
     private String name1;
     private String name2;
     private String address1;

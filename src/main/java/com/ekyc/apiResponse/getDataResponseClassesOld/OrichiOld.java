@@ -1,4 +1,4 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Orichi {
+public class OrichiOld {
     private String address;
     private String zip_code;
     private String prefecture;

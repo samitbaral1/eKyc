@@ -66,10 +66,21 @@ public class KycController {
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
+    @PostMapping(value = "getData/{identificationId}")
+    public ResponseEntity<GetDataResponse> getDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId){
+        ekycRequestDto.setId(identificationId);
+        GetDataResponse getDataResponse = kycService.getDataOfUser(ekycRequestDto);
+        return new ResponseEntity<>(getDataResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "getDataOfUser")
+    public GetDataResponseOld getDataResponseTest(){
+        return new GetDataResponseOld();
+    }
     @PostMapping(value = "getPhotoStatus/{identificationID}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<PhotoStatusResponse> getPhotoStatus(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationID) {
-        ekycRequestDto.setClient_code(client_code);
-        ekycRequestDto.setRoute_key(route_key);
+        ekycRequestDto.setClient_code(ekycRequestDto.getClient_code()==null? client_code: ekycRequestDto.getClient_code());
+        ekycRequestDto.setRoute_key(ekycRequestDto.getRoute_key()==null? route_key: ekycRequestDto.getRoute_key());
         ekycRequestDto.setId(identificationID);
         PhotoStatusResponse photoStatusResponse = kycService.getPhotoStatus(ekycRequestDto);
         return new ResponseEntity<>(photoStatusResponse, HttpStatus.OK);

@@ -1,4 +1,4 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,12 +12,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Identification {
+public class IdentificationOld {
     String image_type;
-    List<ImageDownload> image_list;
+    List<ImageDownloadOld> image_list;
     private String video_url;
     private String duration;
-    private List<OCRResult> ocr;
+    private List<OCRResultOld> ocr;
     private String authenticity;
     private String judge_result;
     private String masking_result;

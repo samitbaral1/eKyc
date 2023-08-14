@@ -1,4 +1,4 @@
-package com.ekyc.model;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

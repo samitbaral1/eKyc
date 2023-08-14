@@ -1,4 +1,4 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountInfoResult {
+public class SupplementaryResultOld {
     String image_type;
-    List<String> url_info;
     String url;
-    List<OCRResult> ocr;
+    List<String> url_info;
+    List<String> regist_data;
+    List<OCRResultOld> ocr;
+    String judge_result;
+    String period_result;
 }

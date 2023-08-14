@@ -1,9 +1,6 @@
 package com.ekyc.rest.service;
 
-import com.ekyc.apiResponse.AuthResponseDto;
-import com.ekyc.apiResponse.ImageResponse;
-import com.ekyc.apiResponse.PhotoStatusResponse;
-import com.ekyc.apiResponse.VideoResponse;
+import com.ekyc.apiResponse.*;
 import com.ekyc.dto.EkycRequestDto;
 import com.ekyc.dto.IdentificationDto;
 import com.ekyc.enums.IdVerificationType;
@@ -16,6 +13,7 @@ import com.ekyc.rest.entity.UserDetails;
 import com.ekyc.utils.Card_ImageCode_Mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
@@ -48,8 +46,10 @@ import java.util.stream.Collectors;
 public class KycServiceImpl implements KycService {
     @Value("${eKycVerificationBaseUrl}")
     private String ekycVerificationBaseUrl;
-    @Value("${phpRequestServer}")
-    private String phpRequestLink;
+    @Value("${phpAuthApi}")
+    private String phpAuthApi;
+    @Value("${phpGetDataApi}")
+    private String phpGetDataApi;
     @Value("${wsHost}")
     private String wsHost;
     @Autowired
@@ -122,7 +122,7 @@ public class KycServiceImpl implements KycService {
         formData.add(new BasicNameValuePair("pageUrl", "https://dev-ap-dtrust.double-std.com/service/api/auth"));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpRequestLink);
+            HttpPost httpPost = new HttpPost(phpAuthApi);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
@@ -145,6 +145,38 @@ public class KycServiceImpl implements KycService {
     }
 
     @Override
+    public GetDataResponse getDataOfUser(EkycRequestDto ekycRequestDto) {
+        GetDataResponse getDataResponse = new GetDataResponse();
+        List<NameValuePair> formData = new ArrayList<>();
+        formData.add(new BasicNameValuePair("client_code", ekycRequestDto.getClient_code()));
+        formData.add(new BasicNameValuePair("route_key", ekycRequestDto.getRoute_key()));
+        formData.add(new BasicNameValuePair("id", String.valueOf(ekycRequestDto.getId())));
+        formData.add(new BasicNameValuePair("pageUrl", "https://dev-ap-dtrust.double-std.com/service/api/get_data"));
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPost httpPost = new HttpPost(phpGetDataApi);
+            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+            httpPost.setHeader("Connection", "Keep-Alive");
+            httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
+            httpPost.setHeader("Accept", "application/x-www-form-urlencoded; charset=UTF-16");
+//            httpPost.setHeader("Authorization", "Basic ZHRydXN0dXNlcjpkdHJ1c3QwNzAz");
+            httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            StringBuilder content = new StringBuilder();
+            String line;
+            while (null != (line = rd.readLine())) {
+                content.append(line);
+            }
+            objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            getDataResponse = objectMapper.readValue(content.toString(), GetDataResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getDataResponse;
+    }
+
+    @Override
     public PhotoStatusResponse getPhotoStatus(EkycRequestDto ekycRequestDto) {
         PhotoStatusResponse photoStatusResponse = new PhotoStatusResponse();
         List<NameValuePair> formData = new ArrayList<>();
@@ -154,7 +186,7 @@ public class KycServiceImpl implements KycService {
         formData.add(new BasicNameValuePair("hash", ekycRequestDto.getHash()));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpRequestLink);
+            HttpPost httpPost = new HttpPost(phpAuthApi);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
@@ -186,7 +218,7 @@ public class KycServiceImpl implements KycService {
         formData.add(new BasicNameValuePair("masking", String.valueOf(ekycRequestDto.getMasking())));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpRequestLink);
+            HttpPost httpPost = new HttpPost(phpAuthApi);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
@@ -217,7 +249,7 @@ public class KycServiceImpl implements KycService {
         formData.add(new BasicNameValuePair("id", String.valueOf(ekycRequestDto.getId())));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpRequestLink);
+            HttpPost httpPost = new HttpPost(phpAuthApi);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");

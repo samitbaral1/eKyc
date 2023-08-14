@@ -1,6 +1,5 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
-import com.ekyc.apiResponse.getDataResponseClasses.Orichi;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestData {
+public class RequestDataOld {
     private String client_nm;
     private String client_nm_kana;
+    private String client_nm_eiji;
     private String zip_no;
     private int prefecture_cd;
     private String address_1;
@@ -21,5 +21,5 @@ public class RequestData {
     private String birth_year;
     private String birth_month;
     private String birth_day;
-    private Orichi orochi;
+    private OrichiOld orochi;
 }

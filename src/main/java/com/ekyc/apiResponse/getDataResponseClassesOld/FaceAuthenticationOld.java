@@ -1,4 +1,4 @@
-package com.ekyc.apiResponse.getDataResponseClasses;
+package com.ekyc.apiResponse.getDataResponseClassesOld;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,11 +11,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FaceAuthentication {
+public class FaceAuthenticationOld {
     private String image_type;
     private String imgae_pattern;
     private String selfie_action_type;
-    private List<ImageDownload> image_list;
+    private List<ImageDownloadOld> image_list;
     private String video_url;
     private String duration;
     private String result;

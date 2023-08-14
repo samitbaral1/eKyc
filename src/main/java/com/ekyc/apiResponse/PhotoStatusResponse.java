@@ -1,6 +1,6 @@
 package com.ekyc.apiResponse;
 
-import com.ekyc.model.Status;
+import com.ekyc.apiResponse.getDataResponseClassesOld.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
