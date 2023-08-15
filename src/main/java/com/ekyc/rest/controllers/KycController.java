@@ -13,7 +13,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,11 +74,6 @@ public class KycController {
         GetDataResponse getDataResponse = kycService.getDataOfUser(ekycRequestDto);
         return new ResponseEntity<>(getDataResponse, HttpStatus.OK);
     }
-
-    @GetMapping(value = "getDataOfUser")
-    public GetDataResponseOld getDataResponseTest(){
-        return new GetDataResponseOld();
-    }
     @PostMapping(value = "getPhotoStatus/{identificationID}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<PhotoStatusResponse> getPhotoStatus(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationID) {
         ekycRequestDto.setClient_code(ekycRequestDto.getClient_code()==null? client_code: ekycRequestDto.getClient_code());
@@ -86,20 +83,20 @@ public class KycController {
         return new ResponseEntity<>(photoStatusResponse, HttpStatus.OK);
     }
 
-    @PostMapping(value = "getImageData/{identificationId}")
-    public ResponseEntity<ImageResponse> getImageDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
-//        AuthResponse authResponse = authApiDao.findby
+    @PostMapping(value = "getImageData/{identificationId}", produces = MediaType.IMAGE_JPEG_VALUE, consumes = "application/json")
+    public ResponseEntity<Resource> getImageDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
         ekycRequestDto.setClient_code(client_code);
         ekycRequestDto.setRoute_key(route_key);
-        ImageResponse imageResponse = kycService.getImageData(ekycRequestDto);
+        ekycRequestDto.setId(identificationId);;
+        Resource imageResponse = kycService.getImageData(ekycRequestDto);
         return new ResponseEntity<>(imageResponse, HttpStatus.OK);
     }
-
-    @PostMapping(value = "getVideoData/{identificationId}")
-    public ResponseEntity<VideoResponse> getVideoDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
+    @PostMapping(value = "getVideoData/{identificationId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> getVideoDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
         ekycRequestDto.setClient_code(client_code);
         ekycRequestDto.setRoute_key(route_key);
-        VideoResponse videoResponse = kycService.getVideoData(ekycRequestDto);
+        ekycRequestDto.setId(identificationId);
+        Resource videoResponse = kycService.getVideoData(ekycRequestDto);
         return new ResponseEntity<>(videoResponse, HttpStatus.OK);
     }
 

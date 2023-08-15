@@ -7,6 +7,7 @@ import com.ekyc.dto.EkycRequestDto;
 import com.ekyc.dto.IdentificationDto;
 import com.ekyc.rest.entity.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.core.io.Resource;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public interface KycService {
     AuthResponseDto performAuth(EkycRequestDto authRequest) throws URISyntaxException, IOException;
     GetDataResponse getDataOfUser(EkycRequestDto ekycRequestDto);
     PhotoStatusResponse getPhotoStatus(EkycRequestDto ekycRequestDto);
-    ImageResponse getImageData(EkycRequestDto ekycRequestDto);
-    VideoResponse getVideoData(EkycRequestDto ekycRequestDto);
+    Resource getImageData(EkycRequestDto ekycRequestDto);
+    Resource getVideoData(EkycRequestDto ekycRequestDto);
     String performIdentification(IdentificationDto identificationDto) throws JsonProcessingException;
 }

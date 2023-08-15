@@ -19,4 +19,5 @@ public class EkycRequestDto {
     private String masking;
     private String hash;
     private int userID;
+    private String pageUrl;
 }

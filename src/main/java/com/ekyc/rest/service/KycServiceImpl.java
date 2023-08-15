@@ -1,6 +1,9 @@
 package com.ekyc.rest.service;
 
-import com.ekyc.apiResponse.*;
+import com.ekyc.apiResponse.AuthResponseDto;
+import com.ekyc.apiResponse.GetDataResponse;
+import com.ekyc.apiResponse.PhotoStatusResponse;
+import com.ekyc.apiResponse.VideoResponse;
 import com.ekyc.dto.EkycRequestDto;
 import com.ekyc.dto.IdentificationDto;
 import com.ekyc.enums.IdVerificationType;
@@ -27,10 +30,13 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -44,14 +50,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class KycServiceImpl implements KycService {
-    @Value("${eKycVerificationBaseUrl}")
-    private String ekycVerificationBaseUrl;
-    @Value("${phpAuthApi}")
-    private String phpAuthApi;
-    @Value("${phpGetDataApi}")
-    private String phpGetDataApi;
     @Value("${wsHost}")
     private String wsHost;
+    @Value("${phpAuthApi}")
+    private String phpAuthApi;
+    @Value("${eKycVerificationBaseUrl}")
+    private String ekycVerificationBaseUrl;
+    @Value("${phpGetDataApi}")
+    private String phpGetDataApi;
+    @Value("${phpGetImageDataApi}")
+    private String phpGetImageDataApi;
+    @Value("${phpGetVideoDataApi}")
+    private String phpGetVideoDataApi;
+
     @Autowired
     private UserDetailsDao userDetailsDao;
     @Autowired
@@ -159,7 +170,6 @@ public class KycServiceImpl implements KycService {
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
             httpPost.setHeader("Accept", "application/x-www-form-urlencoded; charset=UTF-16");
-//            httpPost.setHeader("Authorization", "Basic ZHRydXN0dXNlcjpkdHJ1c3QwNzAz");
             httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
             CloseableHttpResponse response = httpClient.execute(httpPost);
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -209,66 +219,59 @@ public class KycServiceImpl implements KycService {
 
 
     @Override
-    public ImageResponse getImageData(EkycRequestDto ekycRequestDto) {
-        ImageResponse imageResponse = new ImageResponse();
+    public Resource getImageData(EkycRequestDto ekycRequestDto) {
         List<NameValuePair> formData = new ArrayList<>();
         formData.add(new BasicNameValuePair("client_code", ekycRequestDto.getClient_code()));
         formData.add(new BasicNameValuePair("route_key", ekycRequestDto.getRoute_key()));
         formData.add(new BasicNameValuePair("id", String.valueOf(ekycRequestDto.getId())));
         formData.add(new BasicNameValuePair("masking", String.valueOf(ekycRequestDto.getMasking())));
+        formData.add(new BasicNameValuePair("pageUrl", ekycRequestDto.getPageUrl()));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpAuthApi);
+            HttpPost httpPost = new HttpPost(phpGetImageDataApi);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
             httpPost.setHeader("Accept", "application/x-www-form-urlencoded; charset=UTF-16");
-//            httpPost.setHeader("Authorization", "Basic ZHRydXN0dXNlcjpkdHJ1c3QwNzAz");
             httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
             CloseableHttpResponse response = httpClient.execute(httpPost);
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-            StringBuilder content = new StringBuilder();
-            String line;
-            while (null != (line = rd.readLine())) {
-                content.append(line);
-            }
-            System.out.println(content);
-            imageResponse = objectMapper.readValue(content.toString(), ImageResponse.class);
+            InputStream inputStream = response.getEntity().getContent();
+            byte[] imageBytes = inputStream.readAllBytes();
+            inputStream.close();
+            Resource resource = new ByteArrayResource(imageBytes);
+            return resource;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return imageResponse;
     }
 
     @Override
-    public VideoResponse getVideoData(EkycRequestDto ekycRequestDto) {
+    public Resource getVideoData(EkycRequestDto ekycRequestDto) {
         VideoResponse videoResponse = new VideoResponse();
         List<NameValuePair> formData = new ArrayList<>();
         formData.add(new BasicNameValuePair("client_code", ekycRequestDto.getClient_code()));
         formData.add(new BasicNameValuePair("route_key", ekycRequestDto.getRoute_key()));
         formData.add(new BasicNameValuePair("id", String.valueOf(ekycRequestDto.getId())));
+        formData.add(new BasicNameValuePair("pageUrl", ekycRequestDto.getPageUrl()));
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(phpAuthApi);
-            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+            HttpPost httpPost = new HttpPost(phpGetVideoDataApi);
+            httpPost.setHeader("Content-Type", "application/octet-stream");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
             httpPost.setHeader("Accept", "application/x-www-form-urlencoded; charset=UTF-16");
-//            httpPost.setHeader("Authorization", "Basic ZHRydXN0dXNlcjpkdHJ1c3QwNzAz");
             httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
             CloseableHttpResponse response = httpClient.execute(httpPost);
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-            StringBuilder content = new StringBuilder();
-            String line;
-            while (null != (line = rd.readLine())) {
-                content.append(line);
-            }
-            System.out.println(content);
-            videoResponse = objectMapper.readValue(content.toString(), VideoResponse.class);
+            InputStream inputStream = response.getEntity().getContent();
+            byte[] imageBytes = inputStream.readAllBytes();
+            inputStream.close();
+            Resource resource = new ByteArrayResource(imageBytes);
+            return resource;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return videoResponse;
+        return null;
     }
 
     @Override
