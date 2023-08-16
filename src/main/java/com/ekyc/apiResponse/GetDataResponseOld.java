@@ -1,6 +1,6 @@
 package com.ekyc.apiResponse;
 
-import com.ekyc.apiResponse.getDataResponseClassesOld.*;
+import com.ekyc.apiResponse.getDataResponseNeededClass.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetDataResponseOld {
     private Status status;
-    private RequestDataOld request_data;
+    private RequestData request_data;
     private String regist_flg;
     private RegistrationData regist_data;
-    private RequestJsonDataOld request_data_json;
-    private ScrutinyDataOld scrutinyData;
+    private RequestDataJson request_data_json;
+    private ScrutinyData scrutinyData;
 }
