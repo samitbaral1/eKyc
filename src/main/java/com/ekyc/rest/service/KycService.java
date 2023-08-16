@@ -8,6 +8,7 @@ import com.ekyc.dto.IdentificationDto;
 import com.ekyc.rest.entity.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;

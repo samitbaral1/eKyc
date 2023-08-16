@@ -3,7 +3,6 @@ package com.ekyc.rest.service;
 import com.ekyc.apiResponse.AuthResponseDto;
 import com.ekyc.apiResponse.GetDataResponse;
 import com.ekyc.apiResponse.PhotoStatusResponse;
-import com.ekyc.apiResponse.VideoResponse;
 import com.ekyc.dto.EkycRequestDto;
 import com.ekyc.dto.IdentificationDto;
 import com.ekyc.enums.IdVerificationType;
@@ -17,6 +16,7 @@ import com.ekyc.utils.Card_ImageCode_Mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
@@ -32,13 +32,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -246,9 +247,42 @@ public class KycServiceImpl implements KycService {
         }
     }
 
+//    public ResponseEntity<byte[]> getVideoData(EkycRequestDto ekycRequestDto) {
+//        try {
+//            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+//            HttpPost httpPost = new HttpPost(phpGetVideoDataApi);
+//            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+//            // Set other headers as needed
+//
+//            List<NameValuePair> formData = new ArrayList<>();
+//            // Add form data to the list
+//
+//            httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
+//
+//            CloseableHttpResponse response = httpClient.execute(httpPost);
+//            InputStream inputStream = response.getEntity().getContent();
+//
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            byte[] buffer = new bu;
+//            int bytesRead;
+//            while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                byteArrayOutputStream.write(buffer, 0, bytesRead);
+//            }
+//            byte[] videoBytes = byteArrayOutputStream.toByteArray();
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            // Set other headers if needed
+//
+//            return new ResponseEntity<>(videoBytes, headers, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @Override
     public Resource getVideoData(EkycRequestDto ekycRequestDto) {
-        VideoResponse videoResponse = new VideoResponse();
         List<NameValuePair> formData = new ArrayList<>();
         formData.add(new BasicNameValuePair("client_code", ekycRequestDto.getClient_code()));
         formData.add(new BasicNameValuePair("route_key", ekycRequestDto.getRoute_key()));
@@ -257,10 +291,10 @@ public class KycServiceImpl implements KycService {
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpPost httpPost = new HttpPost(phpGetVideoDataApi);
-            httpPost.setHeader("Content-Type", "application/octet-stream");
+            httpPost.setHeader("Accept", "application/octet-stream");
             httpPost.setHeader("Connection", "Keep-Alive");
             httpPost.setHeader("Host", "dev-ap-dtrust.double-std.com");
-            httpPost.setHeader("Accept", "application/x-www-form-urlencoded; charset=UTF-16");
+            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-16");
             httpPost.setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8));
             CloseableHttpResponse response = httpClient.execute(httpPost);
             InputStream inputStream = response.getEntity().getContent();

@@ -1,6 +1,9 @@
 package com.ekyc.rest.controllers;
 
-import com.ekyc.apiResponse.*;
+import com.ekyc.apiResponse.AuthResponseDto;
+import com.ekyc.apiResponse.GeneralApiResponse;
+import com.ekyc.apiResponse.GetDataResponse;
+import com.ekyc.apiResponse.PhotoStatusResponse;
 import com.ekyc.dto.EkycRequestDto;
 import com.ekyc.dto.IdentificationDto;
 import com.ekyc.dto.UserDetailsDto;
@@ -14,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -69,15 +73,16 @@ public class KycController {
     }
 
     @PostMapping(value = "getData/{identificationId}")
-    public ResponseEntity<GetDataResponse> getDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId){
+    public ResponseEntity<GetDataResponse> getDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
         ekycRequestDto.setId(identificationId);
         GetDataResponse getDataResponse = kycService.getDataOfUser(ekycRequestDto);
         return new ResponseEntity<>(getDataResponse, HttpStatus.OK);
     }
+
     @PostMapping(value = "getPhotoStatus/{identificationID}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<PhotoStatusResponse> getPhotoStatus(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationID) {
-        ekycRequestDto.setClient_code(ekycRequestDto.getClient_code()==null? client_code: ekycRequestDto.getClient_code());
-        ekycRequestDto.setRoute_key(ekycRequestDto.getRoute_key()==null? route_key: ekycRequestDto.getRoute_key());
+        ekycRequestDto.setClient_code(ekycRequestDto.getClient_code() == null ? client_code : ekycRequestDto.getClient_code());
+        ekycRequestDto.setRoute_key(ekycRequestDto.getRoute_key() == null ? route_key : ekycRequestDto.getRoute_key());
         ekycRequestDto.setId(identificationID);
         PhotoStatusResponse photoStatusResponse = kycService.getPhotoStatus(ekycRequestDto);
         return new ResponseEntity<>(photoStatusResponse, HttpStatus.OK);
@@ -87,12 +92,14 @@ public class KycController {
     public ResponseEntity<Resource> getImageDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
         ekycRequestDto.setClient_code(client_code);
         ekycRequestDto.setRoute_key(route_key);
-        ekycRequestDto.setId(identificationId);;
+        ekycRequestDto.setId(identificationId);
+        ;
         Resource imageResponse = kycService.getImageData(ekycRequestDto);
         return new ResponseEntity<>(imageResponse, HttpStatus.OK);
     }
-    @PostMapping(value = "getVideoData/{identificationId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> getVideoDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) {
+
+    @PostMapping(value = "getVideoData/{identificationId}", produces = "video/mp4")
+    public ResponseEntity<Resource> getVideoDataOfUser(@RequestBody EkycRequestDto ekycRequestDto, @PathVariable String identificationId) throws IOException {
         ekycRequestDto.setClient_code(client_code);
         ekycRequestDto.setRoute_key(route_key);
         ekycRequestDto.setId(identificationId);
